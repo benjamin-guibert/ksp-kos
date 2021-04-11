@@ -20,7 +20,7 @@ for part in ship:parts {
 
     if module:allFieldNames:length {
       log "        fields:" to logFile.
-      for field in module:allFieldNames log "          - '" + field + "'" to logFile.
+      for field in module:allFieldNames log "          - '" + field + "': '" + module:getField(field) + "'" to logFile.
     }
 
     if module:allEventNames:length {
