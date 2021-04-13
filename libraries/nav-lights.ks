@@ -10,6 +10,7 @@ global function setNavStatus {
       parameter light.
 
       if light:hasEvent("blink off") light:doEvent("blink off").
+      setLightColor(light, rgb(0, 1, 0)).
       if light:hasEvent("lights on") light:doEvent("lights on").
     }).
   }
@@ -18,6 +19,7 @@ global function setNavStatus {
       parameter light.
 
       if light:hasEvent("blink on") light:doEvent("blink on").
+      setLightColor(light, rgb(0, 1, 1)).
       light:setField("blink period", 2).
       if light:hasEvent("lights on") light:doEvent("lights on").
     }).
@@ -27,6 +29,7 @@ global function setNavStatus {
       parameter light.
 
       if light:hasEvent("blink on") light:doEvent("blink on").
+      setLightColor(light, rgb(0, 1, 0)).
       light:setField("blink period", 1).
       if light:hasEvent("lights on") light:doEvent("lights on").
     }).
@@ -36,6 +39,7 @@ global function setNavStatus {
       parameter light.
 
       if light:hasEvent("blink on") light:doEvent("blink on").
+      setLightColor(light, rgb(1, 1, 0)).
       light:setField("blink period", 0.5).
       if light:hasEvent("lights on") light:doEvent("lights on").
     }).
@@ -45,12 +49,13 @@ global function setNavStatus {
       parameter light.
 
       if light:hasEvent("blink on") light:doEvent("blink on").
-      light:setField("blink period", 0.1).
+      setLightColor(light, rgb(1, 0, 0)).
+      light:setField("blink period", 0.2).
       if light:hasEvent("lights on") light:doEvent("lights on").
     }).
   }
   else {
-    forEachLightModule({
+    forEachLightModule(lightList, {
       parameter light.
 
       light:doAction("turn light off", true).
@@ -66,5 +71,14 @@ local function forEachLightModule {
   parameter lightList.
   parameter action.
 
-  for light in lightList action(light:getModule("ModuleLight")).
+  for light in lightList action(light:getModule("ModuleLightExt")).
+}
+
+local function setLightColor {
+  parameter light.
+  parameter color.
+
+  if light:hasField("light r") light:setField("light r", color:r).
+  if light:hasField("light g") light:setField("light g", color:g).
+  if light:hasField("light b") light:setField("light b", color:b).
 }

@@ -7,6 +7,7 @@ if reset or status = "PRELAUNCH" {
   addLibrary("ship").
   addLibrary("nav-lights").
   addProgram("idle").
+  addProgram("navlights").
   addProgram("burn").
   addProgram("circorbit").
   list.
