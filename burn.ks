@@ -1,5 +1,6 @@
 runOncePath("libraries/terminal").
 runOncePath("libraries/ship").
+runOncePath("libraries/nav-lights").
 
 local lockEta is 30.
 local refTwr is 0.9.
@@ -67,10 +68,12 @@ local function main {
   print " ".
   print "Maneuver complete.".
   releaseControl().
+  run idle.
 }
 
 local function lockControl {
   print " ".
+  setNavStatus("MANEUVER").
   lock throttle to 0.
   print "Throttle locked.".
   sas off.
@@ -108,6 +111,7 @@ local function abortManeuver {
   print "Maneuver aborted: " + reason.
   set manAborted to true.
   releaseControl().
+  setNavStatus("IDLE").
 }
 
 local function getBurnStart {

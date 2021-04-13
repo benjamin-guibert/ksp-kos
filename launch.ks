@@ -3,6 +3,7 @@ parameter tgtInc is -999.
 
 runOncePath("libraries/terminal").
 runOncePath("libraries/ship").
+runOncePath("libraries/nav-lights").
 
 local voice is getVoice(0).
 local voiceAbortNote is note(330, 0.5, 0.25, 0.25).
@@ -40,6 +41,7 @@ local function main {
   run gonogo.
   if not gonogoResult return.
 
+  wait 5.
   countdown().
   if launchAborted return.
   liftOff().
@@ -159,16 +161,33 @@ local function checkAltitude {
 
 local function checkDeployment {
   if deploymentStep = 0 and altitude > fairingAltThreshold {
-    ag10 on.
+    for part in getDeploy1Parts() {
+      if part:hasModule("ModuleProceduralFairing") {
+        local partModule is part:getModule("ModuleProceduralFairing").
+
+        if partModule:hasEvent("deploy") partModule:doEvent("deploy").
+      }
+    }
     set deploymentStep to 1.
     print "Fairing deployed.".
   }
   else if deploymentStep = 1 and altitude > deploymentAltThreshold {
-    ag9 on.
+    for part in getDeploy2Parts() {
+      if part:hasModule("ModuleDeployableSolarPanel") {
+        local partModule is part:getModule("ModuleDeployableSolarPanel").
+
+        if partModule:hasEvent("extend solar panel") partModule:doEvent("extend solar panel").
+      }
+      else if part:hasModule("ModuleDeployableAntenna") {
+        local partModule is part:getModule("ModuleDeployableAntenna").
+
+        if partModule:hasEvent("extend antenna") partModule:doEvent("extend antenna").
+      }
+    }
+    setNavStatus("IDLE").
     lights on.
     set deploymentStep to 2.
     print "Deployable equipment extended.".
-    print "Lights turned on.".
   }
 }
 

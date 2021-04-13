@@ -52,3 +52,11 @@ global function hasEnginesAtStage {
 
   return false.
 }
+
+global function getDeploy1Parts {
+  return ship:partsTagged("kDeploy1").
+}
+
+global function getDeploy2Parts {
+  return ship:partsTagged("kDeploy2").
+}

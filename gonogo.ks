@@ -1,5 +1,6 @@
 runOncePath("libraries/terminal").
 runOncePath("libraries/ship").
+runOncePath("libraries/nav-lights").
 
 global gonogoResult is false.
 
@@ -19,20 +20,24 @@ local function main {
 
   print " ".
   print "Resources:".
-  processResult("Electric Charge", ship:electricCharge >= minEc, round(ship:electricCharge)).
-  processResult("        Delta V", ship:deltav:vacuum > minDv, round(ship:deltav:vacuum) + " m/s (vacuum)").
+  processResult("    Electric Charge", ship:electricCharge >= minEc, round(ship:electricCharge)).
+  processResult("            Delta V", ship:deltav:vacuum > minDv, round(ship:deltav:vacuum) + " m/s").
 
   print " ".
-  print "Stages".
-  processResult("    Stage ready", stage:ready).
+  print "Stages:".
+  processResult("        Stage ready", stage:ready).
   checkLaunchClamps().
   checkEngines().
-  checkFairing().
 
+  print " ".
+  print "Equipment:".
+  processResult("     Deployment 1/2", true, getDeploy1Parts():length + " part(s)").
+  processResult("     Deployment 2/2", true, getDeploy2Parts():length + " part(s)").
+  checkNavLights().
 
   print " ".
   print " ".
-  processResult("    ALL SYSTEMS", gonogoResult).
+  processResult("        ALL SYSTEMS", gonogoResult).
 
   print " ".
 }
@@ -42,7 +47,7 @@ local function checkLaunchClamps {
   local result is stage:nextDecoupler:isType("LaunchClamp") and stage:nextDecoupler:stage = launchClampsStage.
   local value is choose "At stage #" + launchClampsStage if result else "Not at stage #" + launchClampsStage.
 
-  processResult("  Launch clamps", result, value).
+  processResult("      Launch clamps", result, value).
 }
 
 local function checkEngines {
@@ -50,11 +55,13 @@ local function checkEngines {
   local result is hasEnginesAtStage(enginesStage).
   local value is choose "At stage #" + enginesStage if result else "Not at stage #" + enginesStage.
 
-  processResult("        Engines", result, value).
+  processResult("            Engines", result, value).
 }
 
-local function checkFairing {
-  processResult("        Fairing", true, ship:partstagged("kFairing"):length + " part(s)").
+local function checkNavLights {
+  local navLightsCount is getNavLights():length.
+
+  processResult("  Navigation lights", navLightsCount > 0, navLightsCount + " part(s)").
 }
 
 local function processResult {
